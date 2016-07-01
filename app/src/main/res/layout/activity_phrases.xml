@@ -23,4 +23,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.android.miwok.PhrasesActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/phrases_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" />
+
 </RelativeLayout>

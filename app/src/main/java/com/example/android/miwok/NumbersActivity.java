@@ -22,7 +22,8 @@ import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import adapter.numberAdapter;
+import adapter.wordAdapter;
+import utility.Word;
 
 public class NumbersActivity extends AppCompatActivity {
 
@@ -31,17 +32,17 @@ public class NumbersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_numbers);
 
-        ArrayList<String> myDataset = new ArrayList<String>();
-        myDataset.add(0,"one");
-        myDataset.add(1,"two");
-        myDataset.add(2,"three");
-        myDataset.add(3,"four");
-        myDataset.add(4,"five");
-        myDataset.add(5,"six");
-        myDataset.add(6,"seven");
-        myDataset.add(7,"eight");
-        myDataset.add(8,"nine");
-        myDataset.add(9,"ten");
+        ArrayList<Word> words = new ArrayList<Word>();
+        words.add(new Word("one", "lutti"));
+        words.add(new Word("two", "otiiko"));
+        words.add(new Word("three", "tolookosu"));
+        words.add(new Word("four", "oyyisa"));
+        words.add(new Word("five", "massokka"));
+        words.add(new Word("six", "temmokka"));
+        words.add(new Word("seven", "kenekaku"));
+        words.add(new Word("eight", "kawinta"));
+        words.add(new Word("nine", "wo’e"));
+        words.add(new Word("ten", "na’aacha"));
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.numbers_recycler_view);
 
@@ -54,7 +55,7 @@ public class NumbersActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        numberAdapter mAdapter = new numberAdapter(myDataset);
+        wordAdapter mAdapter = new wordAdapter(words);
         mRecyclerView.setAdapter(mAdapter);
     }
 }
