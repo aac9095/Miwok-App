@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
@@ -33,14 +34,14 @@ public class ColorsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_colors);
 
         ArrayList<Word> words = new ArrayList<Word>();
-        words.add(new Word("red", "weṭeṭṭi"));
-        words.add(new Word("green", "chokokki"));
-        words.add(new Word("brown", "ṭakaakki"));
-        words.add(new Word("gray", "ṭopoppi"));
-        words.add(new Word("black", "kululli"));
-        words.add(new Word("white", "kelelli"));
-        words.add(new Word("dusty yellow", "ṭopiisә"));
-        words.add(new Word("mustard yellow", "chiwiiṭә"));
+        words.add(new Word("red", "weṭeṭṭi",R.mipmap.color_red));
+        words.add(new Word("green", "chokokki",R.mipmap.color_green));
+        words.add(new Word("brown", "ṭakaakki",R.mipmap.color_brown));
+        words.add(new Word("gray", "ṭopoppi",R.mipmap.color_gray));
+        words.add(new Word("black", "kululli",R.mipmap.color_black));
+        words.add(new Word("white", "kelelli",R.mipmap.color_white));
+        words.add(new Word("dusty yellow", "ṭopiisә",R.mipmap.color_dusty_yellow));
+        words.add(new Word("mustard yellow", "chiwiiṭә",R.mipmap.color_mustard_yellow));
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.colors_recycler_view);
 
@@ -53,7 +54,7 @@ public class ColorsActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        wordAdapter mAdapter = new wordAdapter(words);
+        wordAdapter mAdapter = new wordAdapter(words,1);
         mRecyclerView.setAdapter(mAdapter);
 
     }

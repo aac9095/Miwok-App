@@ -6,10 +6,25 @@ package utility;
 public class Word {
     private String englishTranslation;
     private String miwokTranslation;
+    private int imageResourceId;
 
     public Word(String englishTranslation, String miwokTranslation) {
         this.englishTranslation = englishTranslation;
         this.miwokTranslation = miwokTranslation;
+    }
+
+    public Word(String englishTranslation, String miwokTranslation, int imageResourceId) {
+        this.englishTranslation = englishTranslation;
+        this.miwokTranslation = miwokTranslation;
+        this.imageResourceId = imageResourceId;
+    }
+
+    public int getImageResourceId() {
+        return imageResourceId;
+    }
+
+    public void setImageResourceId(int imageResourceId) {
+        this.imageResourceId = imageResourceId;
     }
 
     public String getEnglishTranslation() {
