@@ -7,16 +7,27 @@ public class Word {
     private String englishTranslation;
     private String miwokTranslation;
     private int imageResourceId;
+    private int songResourceId;
 
-    public Word(String englishTranslation, String miwokTranslation) {
+    public Word(String englishTranslation, String miwokTranslation, int songResourceId) {
         this.englishTranslation = englishTranslation;
         this.miwokTranslation = miwokTranslation;
+        this.songResourceId = songResourceId;
     }
 
-    public Word(String englishTranslation, String miwokTranslation, int imageResourceId) {
+    public Word(String englishTranslation, String miwokTranslation, int imageResourceId, int songResourceId) {
         this.englishTranslation = englishTranslation;
         this.miwokTranslation = miwokTranslation;
         this.imageResourceId = imageResourceId;
+        this.songResourceId = songResourceId;
+    }
+
+    public int getSongResourceId() {
+        return songResourceId;
+    }
+
+    public void setSongResourceId(int songResourceId) {
+        this.songResourceId = songResourceId;
     }
 
     public int getImageResourceId() {
@@ -41,5 +52,10 @@ public class Word {
 
     public void setMiwokTranslation(String miwokTranslation) {
         this.miwokTranslation = miwokTranslation;
+    }
+
+    @Override
+    public String toString() {
+        return "" + songResourceId ;
     }
 }
