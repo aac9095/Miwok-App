@@ -6,6 +6,8 @@ package adapter;
 import java.util.ArrayList;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -30,22 +32,35 @@ public class wordAdapter extends RecyclerView.Adapter<wordAdapter.ViewHolder> {
     private ArrayList<Word> mDataset;
     private int color;
     static public MediaPlayer mediaPlayer;
-    static private int songID;
+    static public int songID;
+    static public AudioManager audioManager;
+    public static AudioManager.OnAudioFocusChangeListener afChangeListener =
+            new AudioManager.OnAudioFocusChangeListener() {
+                public void onAudioFocusChange(int focusChange) {
+                    if(mediaPlayer.isPlaying())
+                        mediaPlayer.pause();
+                    if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                        releaseMediaPlayer();
+                    } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN) {
+                        mediaPlayer.start();
+                    }
+                }
+            };
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView noEnglish,noMiwok;
+        public TextView inEnglish,inMiwok;
         public ImageView imageView;
         public RelativeLayout relativeLayout_image,relativeLayout_text;
 
 
         public ViewHolder(View v) {
             super(v);
-            noEnglish = (TextView) v.findViewById(R.id.number_in_english);
-            noMiwok = (TextView) v.findViewById(R.id.number_in_miwok);
+            inEnglish = (TextView) v.findViewById(R.id.number_in_english);
+            inMiwok = (TextView) v.findViewById(R.id.number_in_miwok);
             imageView = (ImageView) v.findViewById(R.id.image);
             relativeLayout_image = (RelativeLayout) v.findViewById(R.id.image_layout);
             relativeLayout_text = (RelativeLayout) v.findViewById(R.id.textview_layout);
@@ -86,35 +101,39 @@ public class wordAdapter extends RecyclerView.Adapter<wordAdapter.ViewHolder> {
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.noEnglish.setText(mDataset.get(position).getEnglishTranslation());
-        holder.noMiwok.setText(mDataset.get(position).getMiwokTranslation());
-        holder.relativeLayout_text.setBackgroundColor(ContextCompat.getColor(holder.noEnglish.getContext(),color));
+        holder.inEnglish.setText(mDataset.get(position).getEnglishTranslation());
+        holder.inMiwok.setText(mDataset.get(position).getMiwokTranslation());
+        holder.relativeLayout_text.setBackgroundColor(ContextCompat.getColor(holder.inEnglish.getContext(),color));
         releaseMediaPlayer();
         final Word word = mDataset.get(position);
-        mediaPlayer = MediaPlayer.create(holder.noEnglish.getContext(), word.getSongResourceId());
+        mediaPlayer = MediaPlayer.create(holder.inEnglish.getContext(), word.getSongResourceId());
+        audioManager = (AudioManager) holder.inEnglish.getContext().getSystemService(Context.AUDIO_SERVICE);
         songID=word.getSongResourceId();
         holder.relativeLayout_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try{
-                    if(mediaPlayer != null && mediaPlayer.isPlaying() && songID == word.getSongResourceId()) {
-                        mediaPlayer.pause();
-                    }
-                    else {
-                        //Log.e("Release MediaPlayer","from word adapter");
-                        releaseMediaPlayer();
-                        mediaPlayer = MediaPlayer.create(holder.noEnglish.getContext(), word.getSongResourceId());
-                        songID=word.getSongResourceId();
-                        mediaPlayer.start();
-                    }
-
-                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        @Override
-                        public void onCompletion(MediaPlayer mp) {
-                            //Log.e("Release MediaPlayer","from OnCompletionListener");
+                    if(audioManager.requestAudioFocus(afChangeListener,AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)==AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                        if (mediaPlayer != null && mediaPlayer.isPlaying() && songID == word.getSongResourceId()) {
+                            mediaPlayer.pause();
+                        } else {
+                            //Log.e("Release MediaPlayer","from word adapter");
                             releaseMediaPlayer();
+                            mediaPlayer = MediaPlayer.create(holder.inEnglish.getContext(), word.getSongResourceId());
+                            songID = word.getSongResourceId();
+                            mediaPlayer.start();
                         }
-                    });
+
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                //Log.e("Release MediaPlayer","from OnCompletionListener");
+                                releaseMediaPlayer();
+                            }
+                        });
+                    }
+                    else
+                        Log.e("Audio Focus Request","Rejected");
                 }
                 catch (IllegalStateException i){
                     Log.e("Stack Trace",i.toString());
@@ -146,6 +165,7 @@ public class wordAdapter extends RecyclerView.Adapter<wordAdapter.ViewHolder> {
             mediaPlayer.release();
             songID=0;
             mediaPlayer = null;
+            audioManager.abandonAudioFocus(afChangeListener);
         }
     }
 
